@@ -4,10 +4,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors')
 var indexRouter = require('./routes/render/index');
 // var usersRouter = require('./routes/users');
 var usersRouter = require('./routes/api/user');
-
+var categoryRouter = require('./routes/api/category');
 var productsRouter = require('./routes/api/product');
 const { mongooseData } = require('./mongoose');
 const Mongoose  = require('mongoose');
@@ -19,6 +20,7 @@ app.log = debug;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,6 +30,7 @@ app.use(express.static('public/uploads'));
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/category', categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
