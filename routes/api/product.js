@@ -43,7 +43,7 @@ router.get("/", async function (req, res, next) {
 });
 router.get("/:id", async function (req, res, next) {
   try {
-    const getOneProduct = await Products.find({ _id: req.body._id });
+    const getOneProduct = await Products.find({ _id: req.params.id });
     res.send({
       message: "success get product",
       response: getOneProduct,
