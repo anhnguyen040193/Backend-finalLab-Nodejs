@@ -1,30 +1,30 @@
-var express = require('express');
-const mongoose = require('mongoose');
-const User = require('../../model/user');
+var express = require("express");
+const mongoose = require("mongoose");
+const User = require("../../model/user");
 var router = express.Router();
-const multer = require('multer');
+const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (
-      file.mimetype === 'image/jpg' ||
-      file.mimetype === 'image/jpeg' ||
-      file.mimetype === 'image/png'
+      file.mimetype === "image/jpg" ||
+      file.mimetype === "image/jpeg" ||
+      file.mimetype === "image/png"
     ) {
-      cb(null, 'public/uploads');
+      cb(null, "public/uploads");
     } else {
-      cb(new Error('not image'), null);
+      cb(new Error("not image"), null);
     }
   },
   filename: function (req, file, cb) {
-    cb(null, 'myImage_' + Date.now() + '.jpg');
+    cb(null, "myImage_" + Date.now() + ".jpg");
   },
 });
 //
 const upload = multer({ storage, limits: { fileSize: 2000000 } });
 /* GET users listing. */
 
-router.get('/', function (req, res, next) {
+router.get("/", function (req, res, next) {
   // User.find({}, function (err, docs) {
   //   console.log(docs);
   //   if (err) return res.json(err);
@@ -35,41 +35,41 @@ router.get('/', function (req, res, next) {
   //   });
   // });
   User.find({})
-  .limit(20)
-  .then(users => {
-    res.send({
-      message: 'success get all list users',
-      response: users,
-      totalLength: users.length,
+    .limit(20)
+    .then((users) => {
+      res.send({
+        message: "success get all list users",
+        response: users,
+        totalLength: users.length,
+      });
+    })
+    .catch((err) => {
+      res.send(err);
     });
-  })
-  .catch(err => {
-    res.send(err);
-  });
 });
 
-router.post('/', function (req, res, next) {
+router.post("/", function (req, res, next) {
   if (!res.status(200)) return;
   const addUsers = {
     _id: mongoose.Types.ObjectId(),
     ...req.body,
   };
   User.create(addUsers);
-  res.send({ message: 'success create user' });
+  res.send({ message: "success create user" });
 });
 
-router.get('/:id', function (req, res, next) {
+router.get("/:id", function (req, res, next) {
   User.find({ _id: req.body._id }, function (err, docs) {
     if (err) return res.json(err);
     res.send({
-      message: 'success get user',
+      message: "success get user",
       response: docs,
       totalLength: docs.length,
     });
   });
 });
 
-router.patch('/:id', function (req, res, next) {
+router.patch("/:id", function (req, res, next) {
   User.find({ _id: req.body._id }, function (err, docs) {
     if (err) return res.json(err);
     const newDoc = docs.map((item) => {
@@ -78,75 +78,76 @@ router.patch('/:id', function (req, res, next) {
         avatar:
           req.body.avatar === undefined || req.body.avatar === null
             ? item.avatar
-            : req.body.avatar.trim() === ''
+            : req.body.avatar.trim() === ""
             ? item.avatar
             : req.body.avatar.trim(),
         firstName:
           req.body.firstName === undefined || req.body.firstName === null
             ? item.firstName
-            : req.body.firstName.trim() === ''
+            : req.body.firstName.trim() === ""
             ? item.firstName
             : req.body.firstName.trim(),
         lastName:
           req.body.lastName === undefined || req.body.lastName === null
             ? item.lastName
-            : req.body.lastName.trim() === ''
+            : req.body.lastName.trim() === ""
             ? item.lastName
             : req.body.lastName.trim(),
 
         dob:
           req.body.dob === undefined || req.body.dob === null
             ? item.dob
-            : req.body.dob.trim() === ''
+            : req.body.dob.trim() === ""
             ? item.dob
             : req.body.dob.trim(),
         gender:
           req.body.gender === undefined || req.body.gender === null
             ? item.gender
-            : req.body.gender.trim() === ''
+            : req.body.gender.trim() === ""
             ? item.gender
             : req.body.gender.trim(),
         email:
           req.body.email === undefined || req.body.email === null
             ? item.email
-            : req.body.email.trim() === ''
+            : req.body.email.trim() === ""
             ? item.email
             : req.body.email.trim(),
         isEmailValidate:
-          req.body.isEmailValidate === undefined || req.body.isEmailValidate === null
+          req.body.isEmailValidate === undefined ||
+          req.body.isEmailValidate === null
             ? item.isEmailValidate
-            : req.body.isEmailValidate.trim() === ''
+            : req.body.isEmailValidate.trim() === ""
             ? item.isEmailValidate
             : req.body.isEmailValidate.trim(),
         roles:
           req.body.roles === undefined || req.body.roles === null
             ? item.roles
-            : req.body.roles[0].trim() === ''
+            : req.body.roles[0].trim() === ""
             ? item.roles
             : req.body.roles,
         username:
           req.body.username === undefined || req.body.username === null
             ? item.username
-            : req.body.username.trim() === ''
+            : req.body.username.trim() === ""
             ? item.username
             : req.body.username.trim(),
 
         zipcode:
           req.body.zipcode === undefined || req.body.zipcode === null
             ? item.zipcode
-            : req.body.zipcode.trim() === ''
+            : req.body.zipcode.trim() === ""
             ? item.zipcode
             : req.body.zipcode.trim(),
         phoneNumber:
           req.body.phoneNumber === undefined || req.body.phoneNumber === null
             ? item.phoneNumber
-            : req.body.phoneNumber.trim() === ''
+            : req.body.phoneNumber.trim() === ""
             ? item.phoneNumber
             : req.body.phoneNumber.trim(),
         country:
           req.body.country === undefined || req.body.country === null
             ? item.country
-            : req.body.country.trim() === ''
+            : req.body.country.trim() === ""
             ? item.country
             : req.body.country.trim(),
       };
@@ -158,43 +159,49 @@ router.patch('/:id', function (req, res, next) {
       },
       function (err, docs) {
         if (err) return res.json(err);
-        res.send({ message: 'update success user', response: docs });
+        res.send({ message: "update success user", response: docs });
       }
     );
   });
 });
 
-router.put('/:id', function (req, res, next) {
+router.put("/:id", function (req, res, next) {
   try {
-    User.replaceOne({ _id: req.body._id }, { firstName: req.body.firstName }, function (err, docs) {
-      if (err) return res.json(err);
-      res.send({ message: 'replace success user', response: docs });
-    });
+    User.replaceOne(
+      { _id: req.body._id },
+      { firstName: req.body.firstName },
+      function (err, docs) {
+        if (err) return res.json(err);
+        res.send({ message: "replace success user", response: docs });
+      }
+    );
   } catch (error) {
-    res.send({ message: 'replace failed', response: error });
+    res.send({ message: "replace failed", response: error });
   }
 });
 
-router.delete('/:id', function (req, res, next) {
+router.delete("/:id", function (req, res, next) {
   try {
     User.deleteOne({ _id: req.body._id }, function (err, docs) {
       if (err) return res.json(err);
-      res.send({ message: 'delete success user', response: docs });
+      res.send({ message: "delete success user", response: docs });
     });
   } catch (error) {
-    res.send({ message: 'delete failed', response: error });
+    res.send({ message: "delete failed", response: error });
   }
 });
 
-
-router.post('/uploadImage', upload.single('my-avatar'), function (req, res, next) {
-  const file = req.file;
-  if (!file) {
-    const error = new Error('Please upload a File');
-    error.httpStatusCode = 400;
-    return next(error);
+router.post(
+  "/uploadImage",
+  upload.single("my-avatar"),
+  function (req, res, next) {
+    const file = req.file;
+    if (!file) {
+      const error = new Error("Please upload a File");
+      error.httpStatusCode = 400;
+      return next(error);
+    }
+    res.send({ msg: "File uploaded", file: `/uploads/${req.file.filename}` });
   }
-  res.send({ msg: 'File uploaded', file: `/uploads/${req.file.filename}`})
-  // res.render('index', { msg: 'File uploaded', file: `/uploads/${req.file.filename}` });
-});
+);
 module.exports = router;
