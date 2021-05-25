@@ -196,12 +196,15 @@ router.post(
   upload.single("my-avatar"),
   function (req, res, next) {
     const file = req.file;
+    const { filename, path: filePath } = file;
+    const fs = require("fs");
+    fs.copyFileSync(filePath, `public-images/${filename}`);
     if (!file) {
       const error = new Error("Please upload a File");
       error.httpStatusCode = 400;
       return next(error);
     }
-    res.send({ msg: "File uploaded", file: `/uploads/${req.file.filename}` });
+    res.send({ msg: "File uploaded", file: `/images/${req.file.filename}` });
   }
 );
 module.exports = router;
