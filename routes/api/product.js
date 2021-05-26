@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
       file.mimetype === "image/jpeg" ||
       file.mimetype === "image/png"
     ) {
-      cb(null, "public/uploads");
+      cb(null, "public-images");
     } else {
       cb(new Error("not image"), null);
     }
