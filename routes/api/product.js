@@ -91,30 +91,24 @@ router.post("/add/", function (req, res, next) {
   res.redirect(`/admin/products/${addValues._id}`);
 });
 
-router.post("/update/", async function (req, res, next) {
-  console.log(req.body);
+router.patch("/update", async function (req, res, next) {
   try {
+    const data = req.body.params;
     const addValues = {
-      _id: req.body._id,
-      name: req.body.name,
-      // image: req.body.image,
-      // thumbnail: req.body.thumbnail,
-      shortDescription: req.body.shortDescription,
-      categoryId: req.body.categoryId,
-      salePrice: req.body.salePrice,
-      originalPrice: req.body.originalPrice,
-      // images: req.body.images,
-      // thumbnails: req.body.thumbnails,
+      name: data.name,
+      // image: data.image,
+      // thumbnail: data.thumbnail,
+      shortDescription: data.shortDescription,
+      categoryId: data.categoryId,
+      salePrice: data.salePrice,
+      originalPrice: data.originalPrice,
+      // images: data.images,
+      // thumbnails: data.thumbnails,
     };
-    await Products.updateOne(
-      { _id: req.body._id },
-      {
-        $set: addValues,
-      }
-    );
-    res.send({ msg: "update successful" });
+    await Products.updateOne({ _id: req.body.params._id }, { $set: addValues });
+    res.send({ message: "update successful" });
   } catch (error) {
-    res.send({ error });
+    return res.json(error);
   }
 });
 
