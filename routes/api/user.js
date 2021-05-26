@@ -195,6 +195,7 @@ router.post(
   "/uploadImage",
   upload.single("my-avatar"),
   function (req, res, next) {
+    console.log(req.body.id);
     const file = req.file;
     const { filename, path: filePath } = file;
     const fs = require("fs");

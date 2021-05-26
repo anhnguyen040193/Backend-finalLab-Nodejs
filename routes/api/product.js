@@ -2,6 +2,26 @@ var express = require("express");
 var mongoose = require("mongoose");
 const Products = require("../../model/product");
 var router = express.Router();
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    if (
+      file.mimetype === "image/jpg" ||
+      file.mimetype === "image/jpeg" ||
+      file.mimetype === "image/png"
+    ) {
+      cb(null, "public/uploads");
+    } else {
+      cb(new Error("not image"), null);
+    }
+  },
+  filename: function (req, file, cb) {
+    cb(null, "myImage_" + Date.now() + ".jpg");
+  },
+});
+//
+const upload = multer({ storage, limits: { fileSize: 2000000 } });
 
 router.get("/", async function (req, res, next) {
   if (req.query.filter) {
@@ -101,4 +121,35 @@ router.post("/update/", async function (req, res, next) {
   );
 });
 
+router.post(
+  "/uploadImage",
+  upload.single("my-avatar"),
+  async function (req, res, next) {
+    const product = req.body;
+    const file = req.file;
+    const { filename, path: filePath } = file;
+    const fs = require("fs");
+    fs.copyFileSync(filePath, `public-images/${filename}`);
+    if (!file) {
+      const error = new Error("Please upload a File");
+      error.httpStatusCode = 400;
+      return next(error);
+    }
+    await Products.updateOne(
+      { _id: product.id },
+      {
+        image: `http://${req.headers.host}/images/${req.file.filename}`,
+      }
+    )
+      .then(() => {
+        res.send({
+          msg: "File uploaded",
+          file: `http://${req.headers.host}/images/${req.file.filename}`,
+        });
+      })
+      .catch((err) => {
+        res.send(err);
+      });
+  }
+);
 module.exports = router;
