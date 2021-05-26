@@ -74,21 +74,26 @@ router.get("/:id", async function (req, res, next) {
     });
   }
 });
-router.post("/add/", function (req, res, next) {
-  const addValues = {
-    _id: mongoose.Types.ObjectId(),
-    name: req.body.name,
-    // image: req.body.image,
-    // thumbnail: req.body.thumbnail,
-    shortDescription: req.body.shortDescription,
-    categoryId: req.body.categoryId,
-    salePrice: req.body.salePrice,
-    originalPrice: req.body.originalPrice,
-    // images: req.body.images,
-    // thumbnails: req.body.thumbnails,
-  };
-  Products.create(addValues);
-  res.redirect(`/admin/products/${addValues._id}`);
+router.post("/add", async function (req, res, next) {
+  try {
+    const data = req.body.params;
+    const addValues = {
+      _id: mongoose.Types.ObjectId(),
+      name: data.name,
+      // image: data.image,
+      // thumbnail: data.thumbnail,
+      shortDescription: data.shortDescription,
+      categoryId: data.categoryId,
+      salePrice: data.salePrice,
+      originalPrice: data.originalPrice,
+      // images: data.images,
+      // thumbnails: data.thumbnails,
+    };
+    await Products.create(addValues);
+    res.send({ message: "Add successful product" });
+  } catch (error) {
+    res.send({ error });
+  }
 });
 
 router.patch("/update", async function (req, res, next) {
@@ -143,4 +148,5 @@ router.post(
       });
   }
 );
+
 module.exports = router;
